@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("apisem")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+768791009089fe7abfa1b4a8ea285c4410791ede")]
 [assembly: System.Reflection.AssemblyProductAttribute("apisem")]
 [assembly: System.Reflection.AssemblyTitleAttribute("apisem")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
