@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "apisem", "apisem.csproj", "{A2B0C2E6-1F1E-40BF-94A4-4E292C3E0B27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "apisem", "apisem\apisem.csproj", "{66369EF3-8D01-48D7-B7DE-B526D5202E1B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A2B0C2E6-1F1E-40BF-94A4-4E292C3E0B27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A2B0C2E6-1F1E-40BF-94A4-4E292C3E0B27}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A2B0C2E6-1F1E-40BF-94A4-4E292C3E0B27}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A2B0C2E6-1F1E-40BF-94A4-4E292C3E0B27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66369EF3-8D01-48D7-B7DE-B526D5202E1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66369EF3-8D01-48D7-B7DE-B526D5202E1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66369EF3-8D01-48D7-B7DE-B526D5202E1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66369EF3-8D01-48D7-B7DE-B526D5202E1B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

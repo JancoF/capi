@@ -31,3 +31,4 @@ D:\Aplicaciones\IntelNeg\sem4\apisem\obj\Debug\net8.0\refint\apisem.dll
 D:\Aplicaciones\IntelNeg\sem4\apisem\obj\Debug\net8.0\apisem.pdb
 D:\Aplicaciones\IntelNeg\sem4\apisem\obj\Debug\net8.0\apisem.genruntimeconfig.cache
 D:\Aplicaciones\IntelNeg\sem4\apisem\obj\Debug\net8.0\ref\apisem.dll
+D:\Aplicaciones\IntelNeg\sem4\apisem\obj\Debug\net8.0\apisem.sourcelink.json
