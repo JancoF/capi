@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,20 +18,21 @@ builder.Services.AddCors(options => {
         });
 });
 
+// Configurar JsonSerializerOptions
+builder.Services.Configure<JsonOptions>(options =>
+{
+    options.SerializerOptions.PropertyNamingPolicy = null;
+    options.SerializerOptions.PropertyNameCaseInsensitive = true;
+});
+
 // Agregar HttpClient
 builder.Services.AddHttpClient();
-
-// Configurar para escuchar en todas las interfaces
-builder.WebHost.UseUrls("http://0.0.0.0:80");
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseCors("AllowAll");
 
@@ -39,32 +41,51 @@ app.MapGet("/recetas", async (IHttpClientFactory httpClientFactory, IConfigurati
 {
     var client = httpClientFactory.CreateClient();
     var flaskApiUrl = config["FlaskApiUrl"] ?? "http://host.docker.internal:5000";
-    var response = await client.GetAsync($"{flaskApiUrl}/recetas");
     
-    if (response.IsSuccessStatusCode)
+    try
     {
-        var content = await response.Content.ReadAsStringAsync();
-        var recetas = JsonSerializer.Deserialize<List<Receta>>(content);
-        return Results.Ok(recetas);
+        var response = await client.GetAsync($"{flaskApiUrl}/recetas");
+
+        if (response.IsSuccessStatusCode)
+        {
+            var content = await response.Content.ReadAsStringAsync();
+            var recetas = JsonSerializer.Deserialize<List<Receta>>(content);
+            return Results.Ok(recetas);
+        }
+        else
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            return Results.Problem(
+                title: "Error al obtener las recetas",
+                detail: errorContent,
+                statusCode: (int)response.StatusCode
+            );
+        }
     }
-    
-    return Results.StatusCode((int)response.StatusCode);
+    catch (HttpRequestException e)
+    {
+        return Results.Problem(
+            title: "Error de conexión",
+            detail: e.Message,
+            statusCode: 500
+        );
+    }
 })
 .WithName("GetRecetas")
 .WithOpenApi();
 
-// Endpoint para obtener todas las recetas
+// Endpoint para buscar recetas por término
 app.MapGet("/buscar/{termino}", async (string termino, IHttpClientFactory httpClientFactory, IConfiguration config) =>
 {
     var client = httpClientFactory.CreateClient();
     var flaskApiUrl = config["FlaskApiUrl"] ?? "http://host.docker.internal:5000";
     var response = await client.GetAsync($"{flaskApiUrl}/recetas");
-    
+
     if (response.IsSuccessStatusCode)
     {
         var content = await response.Content.ReadAsStringAsync();
         var recetas = JsonSerializer.Deserialize<List<Receta>>(content);
-        
+
         // Función para calcular la similitud entre dos strings
         Func<string, string, bool> sonSimilares = (s1, s2) => 
         {
@@ -73,16 +94,16 @@ app.MapGet("/buscar/{termino}", async (string termino, IHttpClientFactory httpCl
         };
 
         // Buscar coincidencias exactas
-        var resultadosExactos = recetas.Where(r => 
+        var resultadosExactos = recetas?.Where(r => 
             r.Nombre.Contains(termino, StringComparison.OrdinalIgnoreCase) ||
             r.Ingredientes.Contains(termino, StringComparison.OrdinalIgnoreCase) ||
             r.Instrucciones.Contains(termino, StringComparison.OrdinalIgnoreCase)
         ).ToList();
 
         // Si no hay resultados exactos, buscar recomendaciones
-        if (!resultadosExactos.Any())
+        if (resultadosExactos == null || !resultadosExactos.Any())
         {
-            var recomendaciones = recetas.Where(r => 
+            var recomendaciones = recetas?.Where(r => 
                 sonSimilares(r.Nombre, termino) ||
                 sonSimilares(r.Ingredientes, termino) ||
                 sonSimilares(r.Instrucciones, termino)
@@ -101,7 +122,7 @@ app.MapGet("/buscar/{termino}", async (string termino, IHttpClientFactory httpCl
             MensajeBusqueda = $"Resultados para '{termino}':"
         });
     }
-    
+
     return Results.StatusCode((int)response.StatusCode);
 })
 .WithName("BuscarRecetas")
@@ -116,11 +137,11 @@ class Receta
     public int Id { get; set; }
 
     [JsonPropertyName("nombre")]
-    public string Nombre { get; set; }
+    public string Nombre { get; set; } = string.Empty;
 
     [JsonPropertyName("ingredientes")]
-    public string Ingredientes { get; set; }
+    public string Ingredientes { get; set; } = string.Empty;
 
     [JsonPropertyName("instrucciones")]
-    public string Instrucciones { get; set; }
+    public string Instrucciones { get; set; } = string.Empty;
 }
